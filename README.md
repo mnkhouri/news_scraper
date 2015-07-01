@@ -1,13 +1,19 @@
 News-Scraper
 ===
 
-# Easy-mode
+# Introduction
 
-## On OS X
+# Installation
 
-Download the 'setup.sh' and 'main.py' files
+* Download and install [Python 3](https://www.python.org/downloads/)
+* In a terminal, run `pip3 install requests beautifulsoup4 lxml pyperclip`
+	* Or, on OS X, double click `osx_setup.command`
 
-# For end-users
+# Usage
+
+### On OSX
+
+Make sure news-scraper.py and 
 
 
 
