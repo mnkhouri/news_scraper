@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
+# TODO: mayoral mentions
 # TODO: clipboard integration
-# TODO: error handling (for parsing, esp)
-# TODO: parse out &nbsp
 # TODO: fetch from feed (probably not rss, too polluted)
 
 import os
@@ -14,6 +13,7 @@ import requests
 import codecs
 from bs4 import BeautifulSoup
 
+DEBUGMODE = True
 bodyLines = 4
 outputFile = './output.html'
 sources = ['Daily News']
@@ -28,11 +28,16 @@ def parse(source, pageHtml):
     soup = BeautifulSoup(pageHtml)
     if source == 'Daily News':
         headline = soup.find(itemprop="headline").string
-        author = soup.find(rel="author").string
+        try:
+            author = soup.find(rel="author").string
+        except AttributeError:
+            author = soup.find(id="a-credits").string
         rawBody = soup.find_all('p', limit=bodyLines)
         body = ''
         for i in range(bodyLines):
             body += (rawBody[i].text)
+    else:
+        raise NameError("The specified 'source' is not valid")
     return headline, author, body
 
 
@@ -95,7 +100,16 @@ def fetch_page(url):
     return pageHtml
 
 
-def main():
+def fetch_and_parse(source, url):
+    """Takes a source name and url, and returns a parsed article"""
+    article = collections.OrderedDict()
+    article['url'] = url
+    article['headline'], article['author'], article['body'] = parse(source, fetch_page(url))
+    return article
+
+
+def mode_interactive():
+    """Interactive Mode: terminal prompts for a source then repeatedly for a url"""
     #source = prompt_for_source_key(sources)
     source = 'Daily News'
     articles = collections.OrderedDict()
@@ -103,20 +117,30 @@ def main():
     url = input('\nEnter a URL: ')
     #url = 'http://www.nydailynews.com/news/crime/n-y-prison-break-cool-hand-luke-meets-shawshank-article-1.2275096'
     while url != '':
-        articles[url] = collections.OrderedDict()
-        articles[url]['url'] = url
         try:
-            articles[url]['headline', 'author', 'body'] = parse(source, fetch_page(url))
-        except:
+            article = fetch_and_parse(source, url)
+        except Exception as e:
             print('========= ERROR! =========\nArticle cannot be parsed')
-            articles.remove(url)
+            if (DEBUGMODE):
+                print(type(e))
+                print(e)
         else:
+            articles[url] = article
             print('Got article: "' + articles[url]['headline'] + '"\n')
         url = input("Enter a URL (press enter to end): ")
 
     #output_to_term(source, articles)
     output_to_html(source, articles, outputFile)
     open_file(outputFile)
+
+
+def mode_clipboard_watch():
+    """Clipboard Watch Mode: watches for a new string on the clipboard, and tries to fetch that URL"""
+    pass
+
+
+def main():
+    mode_interactive()
 
 
 if __name__ == "__main__":
