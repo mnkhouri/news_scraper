@@ -2,21 +2,22 @@
 # TODO: mayoral mentions
 # TODO: clipboard integration
 # TODO: fetch from feed (probably not rss, too polluted)
+# TODO: log failures
 
 import os
 import sys
 import subprocess
-import re
+import traceback
 import itertools
 import collections
 import requests
 import codecs
 from bs4 import BeautifulSoup
 
-DEBUGMODE = True
 bodyLines = 4
+DEBUGMODE = True  # Can be True, False, or Verbose
 outputFile = './output.html'
-sources = ['Daily News']
+sources = ["Daily News", "NY Times"]
 
 
 def take(n, iterable):
@@ -36,8 +37,19 @@ def parse(source, pageHtml):
         body = ''
         for i in range(bodyLines):
             body += (rawBody[i].text)
+    elif source == 'NY Times':
+        headline = soup.find(itemprop="headline").string
+        author = soup.find(attrs={"name": "author"})['content']  # Author is in the tag itself
+        rawBody = soup.find_all(attrs={"class": "story-body-text story-content"}, limit=bodyLines)
+        body = ''
+        for i in range(bodyLines):
+            body += (rawBody[i].text)
     else:
         raise NameError("The specified 'source' is not valid")
+    if DEBUGMODE == 'Verbose':
+        print(headline)
+        print(author)
+        print(body)
     return headline, author, body
 
 
@@ -111,19 +123,19 @@ def fetch_and_parse(source, url):
 def mode_interactive():
     """Interactive Mode: terminal prompts for a source then repeatedly for a url"""
     #source = prompt_for_source_key(sources)
-    source = 'Daily News'
+    source = 'NY Times'
     articles = collections.OrderedDict()
 
     url = input('\nEnter a URL: ')
-    #url = 'http://www.nydailynews.com/news/crime/n-y-prison-break-cool-hand-luke-meets-shawshank-article-1.2275096'
+    url = 'http://www.nytimes.com/2015/07/01/nyregion/uber-says-proposed-freeze-on-licenses-would-limit-competition.html?ref=nyregion'
     while url != '':
         try:
             article = fetch_and_parse(source, url)
-        except Exception as e:
+        except Exception:
             print('========= ERROR! =========\nArticle cannot be parsed')
-            if (DEBUGMODE):
-                print(type(e))
-                print(e)
+            if DEBUGMODE:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                traceback.print_exception(exc_type, exc_value, exc_traceback)
         else:
             articles[url] = article
             print('Got article: "' + articles[url]['headline'] + '"\n')
