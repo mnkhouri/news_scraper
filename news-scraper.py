@@ -2,7 +2,6 @@
 # TODO: mayoral mentions
 # TODO: clipboard integration
 # TODO: fetch from feed (probably not rss, too polluted)
-# TODO: log failures
 
 import os
 import sys
@@ -15,8 +14,9 @@ import codecs
 from bs4 import BeautifulSoup
 
 bodyLines = 4
-DEBUGMODE = True  # Can be True, False, or Verbose
+DEBUGMODE = 'Verbose'  # Can be True, False, or 'Verbose'
 outputFile = './output.html'
+failureFile = './failedURLs.txt'
 sources = ["Daily News", "NY Times"]
 
 
@@ -68,7 +68,7 @@ def output_to_html(source, articles, outFile):
         for url, article in articles.items():
             output.write(make_hyperlink(article['url'], article['headline']) + '<br>')
             output.write(source.upper() + ' - ' + article['author'] + '<br>')
-            output.write(article['body'] + '<br>')
+            output.write(article['body'] + '<br><br>')
 
 
 def output_to_term(source, articles):
@@ -122,17 +122,19 @@ def fetch_and_parse(source, url):
 
 def mode_interactive():
     """Interactive Mode: terminal prompts for a source then repeatedly for a url"""
-    #source = prompt_for_source_key(sources)
-    source = 'NY Times'
+    source = prompt_for_source_key(sources)
+    #source = 'NY Times'
     articles = collections.OrderedDict()
+    failures = []
 
     url = input('\nEnter a URL: ')
-    url = 'http://www.nytimes.com/2015/07/01/nyregion/uber-says-proposed-freeze-on-licenses-would-limit-competition.html?ref=nyregion'
+    #url = 'http://www.nytimes.com/2015/07/01/nyregion/uber-says-proposed-freeze-on-licenses-would-limit-competition.html?ref=nyregion'
     while url != '':
         try:
             article = fetch_and_parse(source, url)
         except Exception:
             print('========= ERROR! =========\nArticle cannot be parsed')
+            failures.append(url)
             if DEBUGMODE:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 traceback.print_exception(exc_type, exc_value, exc_traceback)
@@ -144,6 +146,8 @@ def mode_interactive():
     #output_to_term(source, articles)
     output_to_html(source, articles, outputFile)
     open_file(outputFile)
+    with codecs.open(failureFile, encoding='utf-8', mode='w') as output:
+        output.write('\n'.join(failures))
 
 
 def mode_clipboard_watch():
