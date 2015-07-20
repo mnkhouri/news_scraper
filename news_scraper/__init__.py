@@ -7,7 +7,10 @@ import sys
 import codecs
 import traceback
 import collections
+import time
 import getopt
+
+import pyperclip
 
 from . import display
 from . import scrape
@@ -28,9 +31,9 @@ def mode_interactive():
         try:
             article = scrape.fetch_and_parse(url, bodyLines)
         except NameError:
-            print('========= ERROR! =========\nNews source not programmed')
+            print('========= ERROR! =========\nNews source not programmed' + url + '\n')
         except Exception:
-            print('========= ERROR! =========\nArticle cannot be parsed')
+            print('========= ERROR! =========\nArticle cannot be parsed' + url + '\n')
             failures.append(url)
             if DEBUGMODE:
                 exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -49,7 +52,41 @@ def mode_interactive():
 
 def mode_clipboard_watch():
     """Clipboard Watch Mode: watches for a new string on the clipboard, and tries to fetch that URL"""
-    pass
+    articles = collections.OrderedDict()
+    failures = []
+
+    print('Hello, this is news-scraper. Copy a URL to start!')
+    print('To quit, press CTRL+C in this window.\n')
+    url = pyperclip.paste()
+    while True:
+        try:
+            tmp_value = pyperclip.paste()
+            if tmp_value != url:
+                url = tmp_value
+                if DEBUGMODE:
+                    print("Value changed: %s" % str(url)[:30])
+                try:
+                    article = scrape.fetch_and_parse(url, bodyLines)
+                except NameError:
+                    print('========= ERROR! =========\nNews source not programmed ' + url + '\n')
+                except Exception:
+                    print('========= ERROR! =========\nArticle cannot be parsed: ' + url + '\n')
+                    failures.append(url)
+                    if DEBUGMODE:
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_exception(exc_type, exc_value, exc_traceback)
+                else:
+                    articles[url] = article
+                    print('Got article: "' + articles[url]['headline'] + '"\n')
+            time.sleep(0.1)
+        except KeyboardInterrupt:
+            break
+
+    #display.output_to_term(articles)
+    display.output_to_html(articles, outputFile)
+    display.open_file(outputFile)
+    with codecs.open(failureFile, encoding='utf-8', mode='w') as output:
+        output.write('\n'.join(failures))
 
 
 def usage():

@@ -34,7 +34,7 @@ def parse(source, pageHtml, bodyLines):
         rawBody = soup.find_all(attrs={"class": "story-body-text story-content"}, limit=bodyLines)
         body = ''
         for i in range(bodyLines):
-            body += (rawBody[i].text)
+            body += (rawBody[i].text) + ' '
     else:
         raise NameError("The specified 'source' is not valid")
     return headline, author, body

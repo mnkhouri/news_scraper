@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name='news_scraper',
-    version='0.0.3',
+    version='0.1.0',
     description='Generates short snippets of news articles',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -24,7 +24,8 @@ setup(
     install_requires=[
         'beautifulsoup4',
         'requests',
-        'lxml'
+        'lxml',
+        'pyperclip'
     ],
     scripts=['bin/news-scraper'],
     include_package_data=True,
