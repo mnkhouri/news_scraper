@@ -7,24 +7,15 @@ import sys
 import codecs
 import traceback
 import collections
+import getopt
 
 from . import display
 from . import scrape
 
 bodyLines = 4
-DEBUGMODE = 'Verbose'  # Can be True, False, or 'Verbose'
+DEBUGMODE = False
 outputFile = './output.html'
 failureFile = './failedURLs.txt'
-sources = ["Daily News", "NY Times"]
-
-
-class Article:
-    def __init__(self, url, source, headline, author, body):
-        self.url = url
-        self.source = source
-        self.headline = headline
-        self.author = author
-        self.body = body
 
 
 def mode_interactive():
@@ -32,11 +23,12 @@ def mode_interactive():
     articles = collections.OrderedDict()
     failures = []
 
-    url = input('\nEnter a URL: ')
-    #url = 'http://www.nytimes.com/2015/07/01/nyregion/uber-says-proposed-freeze-on-licenses-would-limit-competition.html?ref=nyregion'
+    url = input('Enter a URL: ')
     while url != '':
         try:
             article = scrape.fetch_and_parse(url, bodyLines)
+        except NameError:
+            print('========= ERROR! =========\nNews source not programmed')
         except Exception:
             print('========= ERROR! =========\nArticle cannot be parsed')
             failures.append(url)
@@ -60,8 +52,43 @@ def mode_clipboard_watch():
     pass
 
 
+def usage():
+    print('news-scraper')
+    print('\t-l <articleLength> to set # of lines in the summary')
+    print('\t-o <outputFile>    to set the destination file')
+    print('\t-d                 to set debug/verbose mode')
+    print('\t-i                 to use interactive mode')
+    print('\t-h                 to show this help menu')
+
+
 def main():
-    mode_interactive()
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hdil:o:", ["length=", "ofile="])
+    except getopt.GetoptError as err:
+        print(str(err))
+        usage()
+        sys.exit(2)
+    mode = 'clipboard'
+    for opt, arg in opts:
+        if opt == '-h':
+            usage()
+            sys.exit()
+        elif opt == '-d':
+            global DEBUGMODE
+            DEBUGMODE = True
+        elif opt in ("-l", "--length"):
+            global bodyLines
+            bodyLines = arg
+        elif opt in ("-o", "--ofile"):
+            global outputFile
+            outputFile = arg
+        elif opt == '-i':
+            mode = 'interactive'
+
+    if mode == 'clipboard':
+        mode_clipboard_watch()
+    elif mode == 'interactive':
+        mode_interactive()
 
 
 if __name__ == "__main__":

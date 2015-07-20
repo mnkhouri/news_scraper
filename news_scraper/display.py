@@ -33,6 +33,8 @@ def output_to_html(articles, outFile):
                     output.write(source.upper() + ' - ' + article['author'] + '<br>')
                     output.write(article['body'] + '<br><br>')
 
+            output.write('<br>')
+
 
 def output_to_term(articles):
     sources = set_from_dict_attribute(articles, 'source')

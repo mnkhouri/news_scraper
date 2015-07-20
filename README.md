@@ -5,20 +5,18 @@ Create a digest of news stories based on provided URLs.
 
 ## Installation
 
-1. Download the files in this repository
-2. Download and install [Python 3](https://www.python.org/downloads/)
-3. In a terminal, run `pip3 install requests beautifulsoup4 lxml pyperclip`
-	* Or, on OS X, double click `osx_setup.command`
+1. Download and install [Python 3](https://www.python.org/downloads/)
+2. In a terminal, run `pip3 install news_scraper`
 
 ## Usage
 
-Run the news-scraper.py script. On OS X, the `osx_run.command` file handles this with a double-click.
+In a terminal, run `news-scraper`
 
 Output will appear in `output.html`, which will be automatically opened.
 
 ### Supported news sites
 
-NY Daily News
+NY Daily News, NY Times
 
 ### Tweaks
 

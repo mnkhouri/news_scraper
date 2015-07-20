@@ -6,8 +6,14 @@ import requests
 
 def getSourceFromUrl(url):
     host = urlparse(url).hostname
-    return {'www.nytimes.com': 'NY Times',
-            'www.nydailynews.com': 'Daily News'}[host]
+    try:
+        source = {
+            'www.nytimes.com': 'NY Times',
+            'www.nydailynews.com': 'Daily News'
+        }[host]
+    except KeyError:
+        raise NameError("This news source is not programmed yet")
+    return source
 
 
 def parse(source, pageHtml, bodyLines):
