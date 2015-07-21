@@ -10,17 +10,13 @@ Create a digest of news stories based on provided URLs.
 
 ## Usage
 
-In a terminal, run `news-scraper`
+In a terminal, run `news-scraper`. To see more options, run `news-scraper -h`
 
 Output will appear in `output.html`, which will be automatically opened.
 
 ### Supported news sites
 
 NY Daily News, NY Times
-
-### Tweaks
-
-Edit the `bodyLines` variable near the top of `news-scraper.py` to control the number of sentences in the article body.
 
 ## Feedback
 

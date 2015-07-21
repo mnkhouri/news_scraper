@@ -1,19 +1,7 @@
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
-
 import requests
 
-
-def getSourceFromUrl(url):
-    host = urlparse(url).hostname
-    try:
-        source = {
-            'www.nytimes.com': 'NY Times',
-            'www.nydailynews.com': 'Daily News'
-        }[host]
-    except KeyError:
-        raise NameError("This news source is not programmed yet")
-    return source
+from .article import Article
 
 
 def parse(source, pageHtml, bodyLines):
@@ -48,7 +36,6 @@ def fetch_page(url):
 def fetch_and_parse(url, bodyLines):
     """Takes a url, and returns a parsed article with 'bodyLines' lines"""
 
-    article = {'url': url}
-    article['source'] = getSourceFromUrl(url)
-    article['headline'], article['author'], article['body'] = parse(article['source'], fetch_page(url), bodyLines)
+    article = Article(url)
+    article.headline, article.author, article.body = parse(article.source, fetch_page(url), bodyLines)
     return article
