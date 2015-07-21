@@ -15,18 +15,19 @@ def output_to_html(articles, outFile):
     with codecs.open(outFile, encoding='utf-8', mode='w') as output:
         output.write('<meta charset="utf-8">')
 
-        for source in Article.sourceList:
-            output.write(source.upper() + '<br><br>')
+        for source in sorted(Article.sourceList):
+            output.write(source.upper() + '<br>')
             filteredArticles = (article for article in articles if article.source == source)
             for article in filteredArticles:
                 output.write(make_hyperlink(article.url, article.headline) + ' - ' + article.author + '<br>')
 
-            output.write('<br><br>')
+        output.write('<br><br>')
+        for source in sorted(Article.sourceList):
+            filteredArticles = (article for article in articles if article.source == source)
             for article in filteredArticles:
                 output.write(make_hyperlink(article.url, article.headline) + '<br>')
-                output.write(source.upper() + ' - ' + article.autho + '<br>')
+                output.write(source.upper() + ' - ' + article.author + '<br>')
                 output.write(article.body + '<br><br>')
-
             output.write('<br>')
 
 
@@ -37,14 +38,14 @@ def output_to_term(articles):
 
     for source in Article.sourceList:
         print(source.upper() + '\n')
-        filteredArticles = (article for article in articles if article.source == source)
+        filteredArticles = list(article for article in articles if article.source == source)
         for article in filteredArticles:
             print(article.headline + ' - ' + article.author)
 
         print('\n\n')
         for article in filteredArticles:
             print(article.headline)
-            print(source.upper() + ' - ' + article.autho)
+            print(source.upper() + ' - ' + article.author)
             print(article.body + '\n')
 
 
