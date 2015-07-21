@@ -20,6 +20,9 @@ def mode_interactive(options):
         try:
             article = scrape.fetch_and_parse(url, options.bodyLines)
         except NameError:
+            if options.debug:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                traceback.print_exception(exc_type, exc_value, exc_traceback)
             print('========= ERROR! =========\nNews source not programmed: ' + url + '\n')
         except Exception:
             print('========= ERROR! =========\nArticle cannot be parsed: ' + url + '\n')
@@ -58,6 +61,9 @@ def mode_clipboard_watch(options):
                 try:
                     article = scrape.fetch_and_parse(url, options.bodyLines)
                 except NameError:
+                    if options.debug:
+                        exc_type, exc_value, exc_traceback = sys.exc_info()
+                        traceback.print_exception(exc_type, exc_value, exc_traceback)
                     print('========= ERROR! =========\nNews source not programmed: ' + url + '\n')
                 except Exception:
                     print('========= ERROR! =========\nArticle cannot be parsed: ' + url + '\n')

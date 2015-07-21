@@ -16,7 +16,7 @@ def output_to_html(articles, outFile):
         output.write('<meta charset="utf-8">')
 
         for source in sorted(Article.sourceList):
-            output.write(source.upper() + '<br>')
+            output.write('<b>' + source.upper() + '</b>' + '<br>')
             filteredArticles = (article for article in articles if article.source == source)
             for article in filteredArticles:
                 output.write(make_hyperlink(article.url, article.headline) + ' - ' + article.author + '<br>')

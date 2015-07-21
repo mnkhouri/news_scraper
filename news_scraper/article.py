@@ -20,7 +20,9 @@ class Article:
         try:
             source = {
                 'www.nytimes.com': 'NY Times',
-                'www.nydailynews.com': 'Daily News'
+                'www.nydailynews.com': 'Daily News',
+                'www.dnainfo.com': 'DNA Info',
+                'www.silive.com': 'SI Advance'
             }[host]
         except KeyError:
             raise NameError("This news source is not programmed yet")
