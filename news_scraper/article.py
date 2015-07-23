@@ -6,7 +6,7 @@ class Article:
 
     def __init__(self, url):
         self.url = url
-        self.source = self.getSourceFromUrl()
+        self.source = self.get_source_from_url()
         self.sourceList.add(self.source)
 
         self.headline = None
@@ -15,7 +15,7 @@ class Article:
         self.mayoralMention = None
         self.mayoralText = None
 
-    def getSourceFromUrl(self):
+    def get_source_from_url(self):
         host = urlparse(self.url).hostname
         try:
             source = {
