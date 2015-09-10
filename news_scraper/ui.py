@@ -36,13 +36,13 @@ def _output(articles, outputFile, failures, failureFile):
 
 
 def mode_interactive(options):
-    """Interactive Mode: terminal prompts for a source then repeatedly for a url"""
+    """Interactive Mode: terminal prompts repeatedly for a url to fetch"""
     articles = []
     failures = []
 
     url = input('Enter a URL: ')
     while url != '':
-        article = _get_article(url, options.bodyLines, options.debug)
+        article = _get_article(url=url, bodyLines=options.bodyLines, debug=options.debug)
         if (article):
             articles.append(article)
         else:
@@ -69,7 +69,7 @@ def mode_clipboard_watch(options):
                 if options.debug:
                     print("Value changed: %s" % str(url)[:100])
 
-                article = _get_article(url, options.bodyLines, options.debug)
+                article = _get_article(url=url, bodyLines=options.bodyLines, debug=options.debug)
                 if (article):
                     articles.append(article)
                 else:

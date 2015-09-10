@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+# TODO: split body based on '. ' (period space or period newline), not <p> tags
 # TODO: mayoral mentions + 1 line context before/after
+# TODO: put clipboard check in a separate thread so it never misses an entry
 
 import sys
 import getopt
