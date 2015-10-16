@@ -26,6 +26,12 @@ NY Daily News, NY Times, DNA Info, SI Advance
 
 [Issues and feature requests](https://github.com/mnkhouri/news-scraper/issues)
 
+# Development notes
 
+### Running tests
 
+`tox`
 
+### Deploying a new version to PyPI
+
+`python setup.py sdist upload`

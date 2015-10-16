@@ -1,8 +1,7 @@
+import re
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import requests
-
-from .article import Article
 
 
 def parse(url, pageHtml, bodyLines):
@@ -46,7 +45,19 @@ def parse(url, pageHtml, bodyLines):
 
     else:
         raise NameError("The specified 'source' is not valid")
-    return headline, author, body
+
+    mayoralText = soup.findAll(text=re.compile('de ?blasio', re.IGNORECASE))
+    departmentalText = soup.findAll(text=re.compile('department', re.IGNORECASE))
+
+    return {
+        'headline': headline,
+        'author': author,
+        'body': body,
+        'mayoralMention': (mayoralText != []),
+        'mayoralText': mayoralText,
+        'departmentalMention': (departmentalText != []),
+        'departmentalText': departmentalText,
+    }
 
 
 def fetch_page(url):
@@ -55,8 +66,7 @@ def fetch_page(url):
 
 
 def fetch_and_parse(url, bodyLines):
-    """Takes a url, and returns a parsed article with 'bodyLines' lines"""
+    """Takes a url, and returns a dictionary of data with 'bodyLines' lines"""
 
-    article = Article(url)
-    article.headline, article.author, article.body = parse(url, fetch_page(url), bodyLines)
-    return article
+    pageHtml = fetch_page(url)
+    return parse(url, pageHtml, bodyLines)

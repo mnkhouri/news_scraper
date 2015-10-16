@@ -14,16 +14,16 @@ class Options:
         self.bodyLines = 4
         self.debug = False
         self.outputFile = './output.html'
-        self.failureFile = './failedURLs.txt'
+        self.failureFile = './manualURLs.html'
 
 
 def usage():
     print('news-scraper')
-    print('\t-l <articleLength> to set # of lines in the summary')
-    print('\t-o <outputFile>    to set the destination file')
-    print('\t-d                 to set debug/verbose mode')
-    print('\t-i                 to use interactive mode')
-    print('\t-h                 to show this help menu')
+    print('\t -l <articleLength> to set # of lines in the summary')
+    print('\t -o <outputFile>    to set the destination file')
+    print('\t -d                 to set debug/verbose mode')
+    print('\t -i                 to use interactive mode')
+    print('\t -h                 to show this help menu')
 
 
 def main():

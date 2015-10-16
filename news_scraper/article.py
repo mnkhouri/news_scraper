@@ -14,6 +14,11 @@ class Article:
         self.body = None
         self.mayoralMention = None
         self.mayoralText = None
+        self.departmentalMention = None
+        self.departmentalText = None
+
+    def addData(self, entries):
+        self.__dict__.update(entries)
 
     def get_source_from_url(self):
         host = urlparse(self.url).hostname
@@ -27,3 +32,12 @@ class Article:
         except KeyError:
             raise NameError("This news source is not programmed yet")
         return source
+
+    def __eq__(self, other):
+        if isinstance(other, Article):
+            return ((self.url == other.url) and (self.body == other.body))
+        else:
+            return False
+
+    def __hash__(self):
+        return hash(self.url)

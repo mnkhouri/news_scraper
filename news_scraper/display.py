@@ -11,7 +11,7 @@ def make_hyperlink(url, text):
     return(hyperlink)
 
 
-def output_to_html(articles, outFile):
+def output_articles_to_html(articles, outFile):
     with codecs.open(outFile, encoding='utf-8', mode='w') as output:
         output.write('<meta charset="utf-8">')
 
@@ -31,7 +31,16 @@ def output_to_html(articles, outFile):
             output.write('<br>')
 
 
-def output_to_term(articles):
+def output_failures_to_html(failures, outFile):
+    with codecs.open(outFile, encoding='utf-8', mode='w') as output:
+        output.write('<meta charset="utf-8">')
+
+        output.write('<b>URLs to handle manually:</b><br>')
+        for url in failures:
+            output.write(make_hyperlink(url, url) + '<br>')
+
+
+def output_articles_to_term(articles):
     print("\n================================================================================")
     print("--------------------------------- Output ---------------------------------------")
     print("================================================================================")
